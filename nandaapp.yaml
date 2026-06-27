@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nandaapp-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nandaapp
+  template:
+    metadata:
+      labels:
+        app: nandaapp
+    spec:
+      containers:
+      - name: nandaapp
+        image: unandhagopal/nandaapp:latest
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nandaapp-service
+spec:
+  type: NodePort
+  selector:
+    app: nandaapp
+  ports:
+    - port: 5000
+      targetPort: 5000
+      nodePort: 30007

@@ -1,6 +1,6 @@
-# 🐳 Docker Python POC
+# 🚀 NandaApp – Docker + Kubernetes POC
 
-This project is a simple Proof of Concept (POC) showing how to run a Python app inside Docker using VS Code.
+This project demonstrates how to run a Python app inside Docker and deploy it to Kubernetes.
 
 ---
 
@@ -10,70 +10,73 @@ myapp/
 ├── Dockerfile
 ├── requirements.txt
 ├── app.py
-└── README.md
+├── README.md
+└── nandaapp.yaml   # Kubernetes manifest
 ```
 
 ---
 
-## 🚀 How to Build and Run
+## 🐳 Run with Docker
 
-### 1. Build the Docker image
-Open the VS Code terminal in this folder and run:
+### 1. Build the image
 ```bash
-docker build -t myapp .
+docker build -t nandaapp:latest .
 ```
 ### 2. Run the container
 ```bash
-docker run -p 5000:5000 myapp
+docker run -p 5000:5000 nandaapp:latest
 ```
 ### 3. Test in browser
-Open http://localhost:5000 in your browser and you should see:
-
+Open:
 ```
-Hello from inside Docker!
+http://localhost:5000
 ```
 
-## 📝 Files Explained
-- **Dockerfile** → Instructions for building the image.
-- **requirements.txt** → List of Python libraries (Flask, Requests, etc.).
-- **app.py** → Simple Python web app.
-- **README.md** → This guide.
+## ☸️ Deploy with Kubernetes
 
-## 🔄 Rebuild Your Image
-
-When you make changes to your code or Dockerfile, you need to rebuild the image so Docker includes those updates.
-
-### 1. Rebuild the image
+### 1. Push image to Docker Hub
 ```bash
-docker build -t myapp .
+docker tag nandaapp:latest unandhagopal/nandaapp:latest
+docker push unandhagopal/nandaapp:latest
 ```
-This overwrites the old `myapp` image with the new one.
-
-### 2. (Optional) Remove old image first
-If you want to be extra clean, delete the old image before rebuilding:
+### 2. Apply Kubernetes manifest
 ```bash
-docker rmi myapp
+kubectl apply -f nandaapp.yaml
 ```
-Then rebuild:
+### 3. Verify pods
 ```bash
-docker build -t myapp .
+kubectl get pods
 ```
+👉 Status should be **Running**.
 
-### 3. Run the updated container
+### 4. Verify service
 ```bash
-docker run -p 5000:5000 myapp
+kubectl get svc
 ```
+👉 Confirms `nandaapp-service` with NodePort `30007`.
 
-### 💡 Tip: Version tagging
-If you want to keep multiple versions, tag them differently:
+### 5. Access the app
+**Docker Desktop Kubernetes:**
+```
+http://localhost:30007
+```
+**Minikube:**
 ```bash
-docker build -t myapp:v2 .
-docker run -p 5000:5000 myapp:v2
+minikube ip
 ```
-
----
+Then open:
+```
+http://<minikube-ip>:30007
+```
 
 ## ⚡ Troubleshooting
-- **Docker not found** → Make sure Docker Desktop is installed and running.
-- **Port already in use** → Change `-p 5000:5000` to another port (e.g., `-p 8080:5000`).
-- **Dependencies not installing** → Check spelling/versions in `requirements.txt`.
+- **ImagePullBackOff** → Ensure YAML uses `unandhagopal/nandaapp:latest`.
+- **Port not accessible** → Use `kubectl port-forward`:
+  ```bash
+  kubectl port-forward deployment/nandaapp-deployment 5000:5000
+  ```
+  Then open http://localhost:5000.
+- **Pods Pending** → Check with:
+  ```bash
+  kubectl describe pod <pod-name>
+  ```
