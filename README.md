@@ -39,6 +39,40 @@ Hello from inside Docker!
 - **app.py** → Simple Python web app.
 - **README.md** → This guide.
 
+## 🔄 Rebuild Your Image
+
+When you make changes to your code or Dockerfile, you need to rebuild the image so Docker includes those updates.
+
+### 1. Rebuild the image
+```bash
+docker build -t myapp .
+```
+This overwrites the old `myapp` image with the new one.
+
+### 2. (Optional) Remove old image first
+If you want to be extra clean, delete the old image before rebuilding:
+```bash
+docker rmi myapp
+```
+Then rebuild:
+```bash
+docker build -t myapp .
+```
+
+### 3. Run the updated container
+```bash
+docker run -p 5000:5000 myapp
+```
+
+### 💡 Tip: Version tagging
+If you want to keep multiple versions, tag them differently:
+```bash
+docker build -t myapp:v2 .
+docker run -p 5000:5000 myapp:v2
+```
+
+---
+
 ## ⚡ Troubleshooting
 - **Docker not found** → Make sure Docker Desktop is installed and running.
 - **Port already in use** → Change `-p 5000:5000` to another port (e.g., `-p 8080:5000`).
