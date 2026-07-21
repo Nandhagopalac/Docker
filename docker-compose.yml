@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  nandha-flask1:
+    build: ./flask-app
+    ports:
+      - "5000:5000"
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+
+  gopal-flask2:
+    build: ./flask-app
+    ports:
+      - "5001:5000"
+    restart: always
+
+  agalya-node-app:
+    build: ./node-app
+    ports:
+      - "3000:3000"
+    restart: always
+
+  kiruthika-nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - nandha-flask1
+      - gopal-flask2
+      - agalya-node-app
