@@ -5,26 +5,23 @@ This project demonstrates how to run a Python app inside Docker and deploy it to
 ---
 
 ## 📂 Project Structure
-```
 myapp/
 ├── Dockerfile
 ├── requirements.txt
 ├── app.py
-├── README.md
 └── nandaapp.yaml   # Kubernetes manifest
-```
 
 ---
 
 ## 🐳 Run with Docker
 
-### 1. Build the image
+### 1. Initial Setup - Build the image
 ```bash
-docker build -t nandaapp:latest .
+docker build -t nantha-firstapp:latest .
 ```
-### 2. Run the container
+### 2. Initial Setup - Run the container
 ```bash
-docker run -p 5000:5000 nandaapp:latest
+docker run -p 5000:5000 nantha-firstapp:latest
 ```
 ### 3. Test in browser
 Open:
@@ -32,12 +29,37 @@ Open:
 http://localhost:5000
 ```
 
+## 🔄 Rebuild Your Image
+
+When you make changes to your code or Dockerfile, you need to rebuild the image so Docker includes those updates.
+
+### 1. Rebuild the image
+```bash
+docker build -t nantha-firstapp:latest .
+```
+This overwrites the old `nantha-firstapp:latest` image with the new one.
+
+### 2. (Optional) Remove old image first
+If you want to be extra clean, delete the old image before rebuilding:
+```bash
+docker rmi nantha-firstapp:latest
+```
+Then rebuild:
+```bash
+docker build -t nantha-firstapp:latest .
+```
+
+### 3. Run the updated container
+```bash
+docker run -p 5000:5000 nantha-firstapp:latest
+```
+
 ## ☸️ Deploy with Kubernetes
 
 ### 1. Push image to Docker Hub
 ```bash
-docker tag nandaapp:latest unandhagopal/nandaapp:latest
-docker push unandhagopal/nandaapp:latest
+docker tag nantha-firstapp:latest unandhagopal/nandha-firstapp:latest
+docker push unandhagopal/nandha-firstapp:latest
 ```
 ### 2. Apply Kubernetes manifest
 ```bash
@@ -70,7 +92,7 @@ http://<minikube-ip>:30007
 ```
 
 ## ⚡ Troubleshooting
-- **ImagePullBackOff** → Ensure YAML uses `unandhagopal/nandaapp:latest`.
+- **ImagePullBackOff** → Ensure YAML uses `unandhagopal/nandha-firstapp:latest`.
 - **Port not accessible** → Use `kubectl port-forward`:
   ```bash
   kubectl port-forward deployment/nandaapp-deployment 5000:5000
@@ -78,5 +100,5 @@ http://<minikube-ip>:30007
   Then open http://localhost:5000.
 - **Pods Pending** → Check with:
   ```bash
-  kubectl describe pod <pod-name>
+  kubectl describe pod <nandha-firstapp-pod-name>
   ```
